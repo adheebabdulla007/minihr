@@ -3,6 +3,7 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
 import PrivateRoute from './routes/PrivateRoute';
+import Employees from './pages/Employees';
 
 function App() {
   return (
@@ -20,6 +21,14 @@ function App() {
           element={
             <PrivateRoute>
               <Dashboard />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/employees"
+          element={
+            <PrivateRoute>
+              <Employees />
             </PrivateRoute>
           }
         />
