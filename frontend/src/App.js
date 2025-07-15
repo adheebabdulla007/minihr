@@ -6,10 +6,12 @@ import PrivateRoute from './routes/PrivateRoute';
 import Employees from './pages/Employees';
 import AddEmployee from './pages/AddEmployee';
 import EmployeeDashboard from './pages/EmployeeDashboard';
+import Header from './components/Header';
 
 function App() {
   return (
     <Router>
+      <Header />
       <Routes>
         {/* root → redirect to /login */}
         <Route path="/" element={<Navigate to="/login" replace />} />

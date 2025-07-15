@@ -40,29 +40,31 @@ const Dashboard = () => {
   }
 
   return (
-    <div>
-      <h1>Welcome to MiniHR Dashboard!</h1>
+    <div className="container">
+      <div className="card">
+        <h1>Welcome to MiniHR Dashboard!</h1>
 
-      <p>
-        <strong>Total Employees:</strong> {totalEmployees}
-      </p>
+        <p>
+          <strong>Total Employees:</strong> {totalEmployees}
+        </p>
 
-      <h3>Department-wise Employee Count:</h3>
-      <ul>
-        {Object.entries(deptStats).map(([dept, count]) => (
-          <li key={dept}>
-            {dept}: {count}
-          </li>
-        ))}
-      </ul>
+        <h3>Department-wise Employee Count:</h3>
+        <ul>
+          {Object.entries(deptStats).map(([dept, count]) => (
+            <li key={dept}>
+              {dept}: {count}
+            </li>
+          ))}
+        </ul>
 
-      <p>
-        <Link to="/employees">📋 View Employee Management</Link>
-        <br />
-        <Link to="/add-employee">➕ Add New Employee</Link>
-      </p>
+        <p>
+          <Link to="/employees">📋 View Employee Management</Link>
+          <br />
+          <Link to="/add-employee">➕ Add New Employee</Link>
+        </p>
 
-      <LogoutButton />
+        <LogoutButton />
+      </div>
     </div>
   );
 };

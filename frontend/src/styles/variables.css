@@ -1,0 +1,12 @@
+:root {
+  --primary: #6366f1;
+  --accent: #10b981;
+  --background: #f9fafb;
+  --text: #1f2937;
+  --card-bg: #ffffff;
+  --border: #e5e7eb;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --radius: 8px;
+  --transition: all 0.3s ease-in-out;
+  --font: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
