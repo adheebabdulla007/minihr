@@ -1,8 +1,12 @@
 import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+import { signup } from '../firebase/auth';
+import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const Signup = () => {
+  const navigate = useNavigate();
   return (
     <div>
       <h2>Signup</h2>
@@ -13,8 +17,15 @@ const Signup = () => {
           password: Yup.string().min(6).required(),
           role: Yup.string().required(),
         })}
-        onSubmit={(values) => {
-          console.log(values); // will use to seed role later
+        onSubmit={async (values, { setSubmitting, setErrors }) => {
+          try {
+            await signup(values.email, values.password, values.role);
+            navigate('/dashboard');
+          } catch (error) {
+            setErrors({ email: error.message });
+          } finally {
+            setSubmitting(false);
+          }
         }}
       >
         <Form>
@@ -36,6 +47,9 @@ const Signup = () => {
           <button type="submit">Signup</button>
         </Form>
       </Formik>
+      <p>
+        Already registered? <Link to="/login">Login</Link>
+      </p>
     </div>
   );
 };

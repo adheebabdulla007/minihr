@@ -1,5 +1,12 @@
+import LogoutButton from '../components/LogoutButton';
+
 const Dashboard = () => {
-  return <h1>Welcome to MiniHR Dashboard!</h1>;
+  return (
+    <div>
+      <h1>Welcome to MiniHR Dashboard!</h1>
+      <LogoutButton />
+    </div>
+  );
 };
 
 export default Dashboard;

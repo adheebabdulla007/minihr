@@ -1,8 +1,12 @@
 import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+import { login } from '../firebase/auth';
+import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const Login = () => {
+  const navigate = useNavigate();
   return (
     <div>
       <h2>Login</h2>
@@ -12,8 +16,15 @@ const Login = () => {
           email: Yup.string().email().required(),
           password: Yup.string().min(6).required(),
         })}
-        onSubmit={(values) => {
-          console.log(values); // will add firebase login later
+        onSubmit={async (values, { setSubmitting, setErrors }) => {
+          try {
+            await login(values.email, values.password);
+            navigate('/dashboard');
+          } catch (error) {
+            setErrors({ email: error.message });
+          } finally {
+            setSubmitting(false);
+          }
         }}
       >
         <Form>
@@ -28,6 +39,9 @@ const Login = () => {
           <button type="submit">Login</button>
         </Form>
       </Formik>
+      <p>
+        Don't have an account? <Link to="/signup">Signup</Link>
+      </p>
     </div>
   );
 };
