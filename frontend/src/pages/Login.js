@@ -2,6 +2,7 @@ import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { login } from '../firebase/auth';
+import { getUserRole } from '../firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
@@ -18,8 +19,15 @@ const Login = () => {
         })}
         onSubmit={async (values, { setSubmitting, setErrors }) => {
           try {
-            await login(values.email, values.password);
-            navigate('/dashboard');
+            const userCredential = await login(values.email, values.password);
+            const uid = userCredential.user.uid;
+            const role = await getUserRole(uid);
+
+            if (role === 'hr') {
+              navigate('/dashboard');
+            } else {
+              navigate('/employee-dashboard');
+            }
           } catch (error) {
             setErrors({ email: error.message });
           } finally {
