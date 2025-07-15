@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { auth } from './firebase';
+console.log('Auth instance:', auth);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
