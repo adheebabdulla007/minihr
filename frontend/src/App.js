@@ -4,6 +4,7 @@ import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
 import PrivateRoute from './routes/PrivateRoute';
 import Employees from './pages/Employees';
+import AddEmployee from './pages/AddEmployee';
 
 function App() {
   return (
@@ -29,6 +30,14 @@ function App() {
           element={
             <PrivateRoute>
               <Employees />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/add-employee"
+          element={
+            <PrivateRoute>
+              <AddEmployee />
             </PrivateRoute>
           }
         />

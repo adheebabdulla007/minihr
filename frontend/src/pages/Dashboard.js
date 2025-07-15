@@ -9,6 +9,7 @@ const Dashboard = () => (
     {/* link to employee management (HR only) */}
     <p>
       <Link to="/employees">Go to Employee Management</Link>
+      <Link to="/add-employee">Add New Employee</Link>
     </p>
 
     <LogoutButton />
