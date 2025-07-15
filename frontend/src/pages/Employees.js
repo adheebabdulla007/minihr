@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useAuth } from '../context/AuthContext';
+import EmployeeRow from '../components/EmployeeRow';
 
 const Employees = () => {
   const [employees, setEmployees] = useState([]);
@@ -23,9 +24,7 @@ const Employees = () => {
       <h2>Employees</h2>
       <ul>
         {employees.map((emp) => (
-          <li key={emp.id}>
-            <strong>{emp.name}</strong> — {emp.department} — {emp.email}
-          </li>
+          <EmployeeRow key={emp.id} emp={emp} />
         ))}
       </ul>
     </div>
