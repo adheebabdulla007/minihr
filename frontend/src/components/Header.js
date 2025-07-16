@@ -1,19 +1,41 @@
-import { Link } from 'react-router-dom';
+// src/components/Header.js
+import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { logout } from '../firebase/auth';
+import '../styles/Header.css';
 
 const Header = () => {
-  const { role } = useAuth();
+  const { user, role } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/login');
+  };
 
   return (
-    <header className="card flex-between" style={{ marginBottom: '2rem' }}>
-      <h2>MiniHR</h2>
-      {role === 'hr' && (
-        <nav style={{ display: 'flex', gap: '1rem' }}>
-          <Link to="/dashboard">Dashboard</Link>
-          <Link to="/employees">Employees</Link>
-          <Link to="/add-employee">Add</Link>
-        </nav>
-      )}
+    <header className="navbar">
+      <div className="navbar-left">
+        <Link to="/" className="brand">
+          MiniHR
+        </Link>
+        {user && role === 'hr' && (
+          <>
+            <Link to="/dashboard">Dashboard</Link>
+            <Link to="/employees">Employees</Link>
+            <Link to="/add-employee">Add Employee</Link>
+          </>
+        )}
+        {user && role === 'employee' && <Link to="/employee-dashboard">My Profile</Link>}
+      </div>
+      <div className="navbar-right">
+        {user && (
+          <button onClick={handleLogout} className="logout-btn">
+            Logout
+          </button>
+        )}
+      </div>
     </header>
   );
 };

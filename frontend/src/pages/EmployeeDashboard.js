@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { db } from '../firebase';
 import { doc, getDoc } from 'firebase/firestore';
-import LogoutButton from '../components/LogoutButton';
+//import LogoutButton from '../components/LogoutButton';
 import '../styles/EmployeeDashboard.css';
 
 const EmployeeDashboard = () => {
@@ -64,9 +64,9 @@ const EmployeeDashboard = () => {
         <div className="qcard card">📣 Announcements (coming soon)</div>
       </div>
 
-      <div className="logout-wrap">
+      {/*<div className="logout-wrap">
         <LogoutButton />
-      </div>
+      </div>*/}
     </div>
   );
 };
