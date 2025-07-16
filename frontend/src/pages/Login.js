@@ -1,21 +1,20 @@
 import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import { login } from '../firebase/auth';
-import { getUserRole } from '../firebase/auth';
-import { useNavigate } from 'react-router-dom';
-import { Link } from 'react-router-dom';
+import { login, getUserRole } from '../firebase/auth';
+import { useNavigate, Link } from 'react-router-dom';
 
 const Login = () => {
   const navigate = useNavigate();
+
   return (
     <div>
       <h2>Login</h2>
       <Formik
         initialValues={{ email: '', password: '' }}
         validationSchema={Yup.object({
-          email: Yup.string().email().required(),
-          password: Yup.string().min(6).required(),
+          email: Yup.string().email('Invalid email').required('Required'),
+          password: Yup.string().min(6, 'Min 6 chars').required('Required'),
         })}
         onSubmit={async (values, { setSubmitting, setErrors }) => {
           try {
@@ -23,11 +22,7 @@ const Login = () => {
             const uid = userCredential.user.uid;
             const role = await getUserRole(uid);
 
-            if (role === 'hr') {
-              navigate('/dashboard');
-            } else {
-              navigate('/employee-dashboard');
-            }
+            navigate(role === 'hr' ? '/dashboard' : '/employee-dashboard');
           } catch (error) {
             setErrors({ email: error.message });
           } finally {
@@ -48,7 +43,7 @@ const Login = () => {
         </Form>
       </Formik>
       <p>
-        Don't have an account? <Link to="/signup">Signup</Link>
+        Don’t have an account? <Link to="/signup">Signup</Link>
       </p>
     </div>
   );

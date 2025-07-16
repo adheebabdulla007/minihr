@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import LogoutButton from '../components/LogoutButton';
 import { useAuth } from '../context/AuthContext';
-import { db } from '../firebase/firestore';
+import { db } from '../firebase';
 import { collection, getDocs } from 'firebase/firestore';
+import './Dashboard.css'; // ← new CSS file
 
 const Dashboard = () => {
   const { role } = useAuth();
@@ -12,57 +13,58 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchEmployeeStats = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(db, 'employees'));
-        const employees = querySnapshot.docs.map((doc) => doc.data());
+      const snap = await getDocs(collection(db, 'employees'));
+      const employees = snap.docs.map((d) => d.data());
 
-        setTotalEmployees(employees.length);
+      setTotalEmployees(employees.length);
 
-        const departmentCount = {};
-        employees.forEach((emp) => {
-          const dept = emp.department || 'Unknown';
-          departmentCount[dept] = (departmentCount[dept] || 0) + 1;
-        });
-
-        setDeptStats(departmentCount);
-      } catch (error) {
-        console.error('Error fetching employee stats:', error);
-      }
+      const deptCount = {};
+      employees.forEach((emp) => {
+        const dept = emp.department || 'Unknown';
+        deptCount[dept] = (deptCount[dept] || 0) + 1;
+      });
+      setDeptStats(deptCount);
     };
 
-    if (role === 'hr') {
-      fetchEmployeeStats();
-    }
+    if (role === 'hr') fetchEmployeeStats();
   }, [role]);
 
-  if (role !== 'hr') {
-    return <p>Access Denied: Only HRs can access the dashboard.</p>;
-  }
+  if (role !== 'hr') return <p className="access-denied">Access denied – HR only.</p>;
 
   return (
-    <div className="container">
-      <div className="card">
-        <h1>Welcome to MiniHR Dashboard!</h1>
+    <div className="dash-wrapper">
+      {/* TOP HERO */}
+      <section className="hero card">
+        <h1>👋 Welcome to MiniHR</h1>
+        <p className="subtitle">Manage employees, view stats, and streamline HR processes.</p>
+      </section>
 
-        <p>
-          <strong>Total Employees:</strong> {totalEmployees}
-        </p>
+      {/* QUICK ACTIONS */}
+      <section className="quick-actions">
+        <Link to="/employees" className="action-card card">
+          📋 <span>Employee Records</span>
+        </Link>
+        <Link to="/add-employee" className="action-card card">
+          ➕ <span>Add Employee</span>
+        </Link>
+      </section>
 
-        <h3>Department-wise Employee Count:</h3>
-        <ul>
-          {Object.entries(deptStats).map(([dept, count]) => (
-            <li key={dept}>
-              {dept}: {count}
-            </li>
-          ))}
-        </ul>
+      {/* STATS */}
+      <section className="stats-grid">
+        <div className="stat-card card">
+          <p className="stat-number">{totalEmployees}</p>
+          <p className="stat-label">Total Employees</p>
+        </div>
 
-        <p>
-          <Link to="/employees">📋 View Employee Management</Link>
-          <br />
-          <Link to="/add-employee">➕ Add New Employee</Link>
-        </p>
+        {Object.entries(deptStats).map(([dept, count]) => (
+          <div key={dept} className="stat-card card">
+            <p className="stat-number">{count}</p>
+            <p className="stat-label">{dept}</p>
+          </div>
+        ))}
+      </section>
 
+      <div className="logout-wrap">
         <LogoutButton />
       </div>
     </div>

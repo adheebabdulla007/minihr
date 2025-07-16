@@ -6,11 +6,23 @@ export const signup = async (email, password, role) => {
   const userCredential = await createUserWithEmailAndPassword(auth, email, password);
   const uid = userCredential.user.uid;
 
+  // Save basic user info (used for access control)
   await setDoc(doc(db, 'users', uid), {
     uid,
     email,
     role,
   });
+
+  // If employee, create a basic profile in employees collection
+  if (role === 'employee') {
+    await setDoc(doc(db, 'employees', uid), {
+      name: email.split('@')[0], // Placeholder name from email
+      email,
+      department: '',
+      phone: '',
+      joiningDate: '',
+    });
+  }
 
   return userCredential;
 };

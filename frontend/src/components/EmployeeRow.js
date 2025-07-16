@@ -1,6 +1,7 @@
+// src/components/EmployeeRow.js
 import React, { useState } from 'react';
 import { doc, updateDoc, deleteDoc } from 'firebase/firestore';
-import { db } from '../firebase/firestore';
+import { db } from '../firebase';
 
 const EmployeeRow = ({ emp }) => {
   const [editing, setEditing] = useState(false);
@@ -8,6 +9,7 @@ const EmployeeRow = ({ emp }) => {
     name: emp.name,
     email: emp.email,
     department: emp.department,
+    joiningDate: emp.joiningDate,
   });
 
   const handleChange = (e) => {
@@ -20,9 +22,7 @@ const EmployeeRow = ({ emp }) => {
   const handleUpdate = async () => {
     const empRef = doc(db, 'employees', emp.id);
     await updateDoc(empRef, {
-      name: formData.name,
-      email: formData.email,
-      department: formData.department,
+      ...formData,
     });
     setEditing(false);
   };
@@ -34,23 +34,37 @@ const EmployeeRow = ({ emp }) => {
   };
 
   return (
-    <li>
+    <div className="table-row">
       {editing ? (
         <>
           <input name="name" value={formData.name} onChange={handleChange} />
           <input name="email" value={formData.email} onChange={handleChange} />
           <input name="department" value={formData.department} onChange={handleChange} />
-          <button onClick={handleUpdate}>💾 Save</button>
-          <button onClick={() => setEditing(false)}>❌ Cancel</button>
+          <input name="joiningDate" value={formData.joiningDate} onChange={handleChange} />
+          <div className="row-actions">
+            <button className="save-btn" onClick={handleUpdate}>
+              💾
+            </button>
+            <button className="cancel-btn" onClick={() => setEditing(false)}>
+              ✖
+            </button>
+          </div>
         </>
       ) : (
         <>
-          <strong>{emp.name}</strong> — {emp.department} — {emp.email}
-          <button onClick={() => setEditing(true)}>✏️ Edit</button>
-          <button onClick={handleDelete}>🗑 Delete</button>
+          <span>{emp.name}</span>
+          <span>{emp.email}</span>
+          <span>
+            <span className="badge">{emp.department || 'Unknown'}</span>
+          </span>
+          <span>{emp.joiningDate || '-'}</span>
+          <div className="row-actions">
+            <button onClick={() => setEditing(true)}>✏️</button>
+            <button onClick={handleDelete}>🗑</button>
+          </div>
         </>
       )}
-    </li>
+    </div>
   );
 };
 

@@ -1,8 +1,10 @@
+// src/pages/Employees.js
 import { useEffect, useState, useMemo } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
-import { db } from '../firebase'; // uses central firebase.js
+import { db } from '../firebase';
 import { useAuth } from '../context/AuthContext';
 import EmployeeRow from '../components/EmployeeRow';
+import './Employees.css';
 
 const Employees = () => {
   const { role } = useAuth();
@@ -24,7 +26,7 @@ const Employees = () => {
   const filteredEmployees = useMemo(() => {
     let data = [...employees];
 
-    // search by name or email
+    // search
     if (search.trim()) {
       const q = search.toLowerCase();
       data = data.filter(
@@ -32,7 +34,7 @@ const Employees = () => {
       );
     }
 
-    // filter by department
+    // department filter
     if (departmentFilter) {
       data = data.filter((e) => e.department === departmentFilter);
     }
@@ -48,36 +50,31 @@ const Employees = () => {
       case 'date-desc':
         data.sort((a, b) => new Date(b.joiningDate) - new Date(a.joiningDate));
         break;
-      default: // 'name-asc'
+      default:
         data.sort((a, b) => a.name.localeCompare(b.name));
     }
 
     return data;
   }, [employees, search, departmentFilter, sortBy]);
 
-  if (role !== 'hr') return <p>Access Denied – HR only.</p>;
+  if (role !== 'hr') return <p className="access-denied">🚫 Access Denied – HR only.</p>;
 
   const departments = Array.from(new Set(employees.map((e) => e.department || 'Unknown')));
 
   return (
-    <div>
-      <h2>Employees</h2>
+    <div className="employees-container">
+      <h2 className="employees-title">👥 Employee Directory</h2>
 
-      {/* Controls */}
-      <div style={{ marginBottom: '1rem' }}>
+      {/* Filters */}
+      <div className="filters-bar">
         <input
           type="text"
-          placeholder="Search name / email"
+          placeholder="🔍 Search by name or email"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          style={{ marginRight: '8px' }}
         />
 
-        <select
-          value={departmentFilter}
-          onChange={(e) => setDepartmentFilter(e.target.value)}
-          style={{ marginRight: '8px' }}
-        >
+        <select value={departmentFilter} onChange={(e) => setDepartmentFilter(e.target.value)}>
           <option value="">All Departments</option>
           {departments.map((d) => (
             <option key={d} value={d}>
@@ -87,19 +84,26 @@ const Employees = () => {
         </select>
 
         <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-          <option value="name-asc">Name A–Z</option>
-          <option value="name-desc">Name Z–A</option>
-          <option value="date-asc">Joining Date ↑</option>
-          <option value="date-desc">Joining Date ↓</option>
+          <option value="name-asc">Name ↑</option>
+          <option value="name-desc">Name ↓</option>
+          <option value="date-asc">Joining Date ↑</option>
+          <option value="date-desc">Joining Date ↓</option>
         </select>
       </div>
 
-      {/* List */}
-      <ul>
+      {/* Table */}
+      <div className="employee-table">
+        <div className="table-header">
+          <span>Name</span>
+          <span>Email</span>
+          <span>Department</span>
+          <span>Joining Date</span>
+          <span>Actions</span>
+        </div>
         {filteredEmployees.map((emp) => (
           <EmployeeRow key={emp.id} emp={emp} />
         ))}
-      </ul>
+      </div>
     </div>
   );
 };

@@ -4,11 +4,10 @@ import { auth } from '../firebase';
 import { getUserRole } from '../firebase/auth';
 
 const AuthContext = createContext();
-
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null); // ← unified name
+  const [user, setUser] = useState(null);
   const [role, setRole] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -19,10 +18,11 @@ export const AuthProvider = ({ children }) => {
       if (fbUser) {
         try {
           const fetchedRole = await getUserRole(fbUser.uid);
-          setRole(fetchedRole);
+          // Fallback to "employee" if no role found
+          setRole(fetchedRole || 'employee');
         } catch (err) {
           console.error('Error fetching role:', err);
-          setRole(null);
+          setRole('employee');
         }
       } else {
         setRole(null);

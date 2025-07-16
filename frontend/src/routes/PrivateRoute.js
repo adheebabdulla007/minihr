@@ -1,12 +1,23 @@
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const PrivateRoute = ({ children }) => {
-  const { user, loading } = useAuth();
+  const { user, role, loading } = useAuth();
+  const location = useLocation();
 
   if (loading) return <p>Loading...</p>;
 
-  return user ? children : <Navigate to="/login" />;
+  if (!user) return <Navigate to="/login" replace />;
+
+  /* Force‑redirect if user visits wrong dashboard */
+  if (location.pathname.startsWith('/dashboard') && role !== 'hr') {
+    return <Navigate to="/employee-dashboard" replace />;
+  }
+  if (location.pathname.startsWith('/employee-dashboard') && role === 'hr') {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return children;
 };
 
 export default PrivateRoute;
